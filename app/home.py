@@ -461,5 +461,4 @@ Our technology provides insights on energy generation, consumption and cost, emp
                 foot2.metric("Mean Absolute Error", "£0.64 📈")
                 foot3.metric("R Squared:", "0.92 ✅")
                 st.markdown('')  # Empty markdown line for spacing
-                st.balloons()
                 st.markdown("---")
