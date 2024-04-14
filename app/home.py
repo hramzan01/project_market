@@ -98,14 +98,16 @@ with st.container():
     st.markdown('')  # Empty markdown line for spacing
 
 
-#     st.markdown('')
-#     st.write("""At Market©, we're revolutionizing energy ownership with our cutting-edge AI platform, powered by solar energy data.
-# Our technology provides insights on energy generation, consumption and cost, empowering individuals and communities to save money and invest in a more sustainable future.
-# ☀️""")
+    st.markdown('')
+    st.write("""At Market©, we're revolutionizing energy ownership with our cutting-edge AI platform, powered by solar energy data.
+Our technology provides insights on energy generation, consumption and cost, empowering individuals and communities to save money and invest in a more sustainable future.
+☀️""")
 
+    st.markdown('')  # Empty markdown line for spacing
+    st.markdown('')  # Empty markdown line for spacing
+    
     st.image(what, use_column_width=True)
 
-        
     st.markdown('')  # Empty markdown line for spacing
     st.markdown('')  # Empty markdown line for spacing
     st.markdown('')  # Empty markdown line for spacing
@@ -121,7 +123,7 @@ with st.container():
         image = Image.open(f'app/assets/Bungalow.png').resize((100, 100))
         col1.image(image, use_column_width=False)
         #col2.subheader("")
-    col2.text_input("Username", "", key="name")
+    user = col2.text_input("Username", "New User", key="name")
     House_type = ["Bungalow","Terrace house", "Detached house", "Flat", "Semi-detached house"]
     #selected_date = st.date_input('Select a date', datetime.today())
     col2.selectbox("Choose your house type", House_type, key="house")
@@ -136,7 +138,7 @@ with st.container():
         #col2.subheader("")
     battery_type = ["Small battery", "Large battery", "Electric vehicle"]
     col4.selectbox("Choose your battery size", battery_type, key="Bat_type")
-    col4.number_input("Battery Charge (%)", min_value=0, max_value=100, step=1)
+    col4.number_input("Battery Charge (%)", min_value=30, max_value=100, step=1)
     col5, col6= st.columns([1,3])
     try:
         if st.session_state.Num_solar < 5:
@@ -156,17 +158,16 @@ with st.container():
         image = Image.open(f'app/assets/Double solar.png').resize((100, 100))
         col5.image(image, use_column_width=False)
         #col2.subheader("")
+        
     #House_price = st.number_input("House price", step=10000)
     #Income = st.number_input("Income", step=10000)
-    col6.number_input("Solar Size (kW)", step=1, max_value=25, key="Num_solar")
+    col6.number_input("Solar Size (kW)", 1,step=1, max_value=25, key="Num_solar")
     #Battery_Charge =  st.number_input("Battery Charge", step=1, min_value=0, max_value=100)
-    col6.text_input("Postcode", "", key="postcode")
+    postcode = col6.text_input("Postcode", "E2 8DY", key="postcode")
     
     # Dashboard
     battery_size = 5
     battery_charge = 3
-    postcode = 'E2 8DY'
-    name = 'Le Wagon LDN'
 
     # Return Lat & Lon from postcode
     base_url = 'https://api.postcodes.io/postcodes'
@@ -268,22 +269,16 @@ with st.container():
                             zoom=16
                         ),
                         height=400,
+                        width=670
                     )
                     return fig
                 st.write(london_map(lat, lon))
 
                 # Main optimised prohet graph
                 st.divider()
-                # Battery Output
-                #fig_final = px.area(x=x_battopt, y=y_battopt, labels={'x': 'Date', 'y': 'Battery Output'}, title='Battery Output')
-                #fig_final.update_layout(plot_bgcolor='rgba(0, 0, 0, 0)', paper_bgcolor='rgba(0, 0, 0, 0)', width=600, height=400)
-                #fig_final.update_layout(width=400)
-                #fig_final.update_layout(width=1280)
-                #st.plotly_chart(fig_final)
-
 
                 # Header
-                st.subheader(f"{name}'s Energy Hub")
+                st.subheader(f"{user}'s Energy Hub")
                 st.divider()
                 st.markdown('')  # Empty markdown line for spacing
 
@@ -331,11 +326,6 @@ with st.container():
                 date_range = pd.date_range(start = first_date, end=last_date, freq = 'h')
                 date_range = date_range[:168]
                 import matplotlib.pyplot as plt
-                #plt.plot(date_range, model, label='Optimised Price')
-                #plt.plot(date_range, baseline, label = 'Unoptimised Price')
-                #plt.plot(date_range, baseline_no_solar, label = 'Price No Solar')
-                #plt.ylabel('Weekly Cost (£)')
-                #plt.legend()
 
                 # Battery Output
                 df = pd.DataFrame({'date': date_range ,'Solar plus Market': model, 'Solar': baseline, 'No Solar': baseline_no_solar})
