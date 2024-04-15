@@ -84,7 +84,7 @@ Market is a cutting-edge solar energy management app designed to optimize cost s
 ## Getting Started
 
 ### Executing program
-To start using Project Zero, simply download the latest version from the repository and follow the installation instructions in the documentation.
+To start using Project Market, simply download the latest version from the repository and follow the installation instructions in the documentation.
 
 ### Dependencies
 ```bash
@@ -93,18 +93,20 @@ pip install -r requirements.txt
 
 ### Installing
 ```bash
-pip install project_zero
+pip install project_market
 ```
 
 ## Authors
-- Haaris Ramzan, RSHP (Back End, Data Engineering)
-- Riccardo Pellizon, RSHP (Front End, Interface)
+- Haaris Ramzan, Le Wagon
+- Adam Oxley, Le Wagon
+- Rahul Iyer, Le Wagon
+- Freddie Oxland, Le Wagon
 
 ## License
-This project is licensed under Proprietary License - see the LICENSE.md file for details
+This project is licensed under MIT License - see the LICENSE.md file for details
 
 ## Acknowledgments
-* The Project Technology Team and Leadership at RSHP who helped support and facilitate this development
+* The support of TA's and Staff at Le Wagon LDN Data Science and AI Batch #1461
 
 ---
 
