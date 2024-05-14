@@ -95,9 +95,9 @@ Our technology provides insights on energy generation, consumption and cost, emp
     # PROFILE SECTION
 
     # Load in images and display them
-    property_images = ['property_bungalow', 'property_detached', 'property_flat', 'property_terrace']
-    battery_images = ['battery_car', 'battery_large', 'battery_small']
-    panel_images = ['panel_1', 'panel_2', 'panel_3', 'panel_4']
+    property_images = ['property_detached', 'property_bungalow', 'property_flat', 'property_terrace']
+    battery_images = ['battery_small', 'battery_large', 'battery_car']
+    panel_images = ['panel_3', 'panel_2', 'panel_1', 'panel_4']
 
     user_input = st.text_input("Username", "New User", key="user")
     postcode = st.text_input("Postcode", "E2 8DY", key="postcode")
@@ -111,15 +111,19 @@ Our technology provides insights on energy generation, consumption and cost, emp
 
     if property_selection:
         property_image = Image.open(f'app/assets/{property_selection}.png')
-        col1.image(property_image, use_column_width=True, caption=property_selection)
+        col1.image(property_image, use_column_width=True)
 
     if battery_selection:
         battery_image = Image.open(f'app/assets/{battery_selection}.png')
-        col2.image(battery_image, use_column_width=True, caption=battery_selection)
+        col2.image(battery_image, use_column_width=True)
 
     if panel_selection:
         panel_image = Image.open(f'app/assets/{panel_selection}.png')
-        col3.image(panel_image, use_column_width=True, caption=panel_selection)
+        col3.image(panel_image, use_column_width=True)
+
+    st.markdown('')  # Empty markdown line for spacing
+    st.markdown('')  # Empty markdown line for spacing
+    st.markdown('')  # Empty markdown line for spacing
 
 # Return Lat & Lon from postcode
 base_url = 'https://api.postcodes.io/postcodes'
@@ -129,8 +133,7 @@ lon = response['result']['longitude']
 
 # Generate Dashboard when submit is triggered
 with st.form(key='params_for_api', border=False):
-    st.write('Click below to generate your dashboard 👇')
-    if st.form_submit_button('CHARGE ⚡️', use_container_width=True):
+    if st.form_submit_button('CHARGE UP DASHBOARD ⚡️', use_container_width=True):
         with st.spinner('charging up your dashboard...'):
 
             # Call cached data
@@ -239,7 +242,6 @@ with st.form(key='params_for_api', border=False):
                 st.metric("Energy Sold YTD", "⌁451kWh", "+4.87% vs 2023")
 
             # convert model price dictionary into numpy array and cumulative sum
-            st.write('Hover over each line to compare the different scenarios')
             result = data['res_delta_buy_sell_price']['0'].items()
             graph_data = list(result)
             model = np.asarray(np.array(graph_data)[:,1], dtype=float).cumsum()/100
