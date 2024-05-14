@@ -111,15 +111,15 @@ Our technology provides insights on energy generation, consumption and cost, emp
 
     if property_selection:
         property_image = Image.open(f'app/assets/{property_selection}.png')
-        col1.image(property_image, use_column_width=True)
+        col1.image(property_image, use_column_width=True, caption=property_selection)
 
     if battery_selection:
         battery_image = Image.open(f'app/assets/{battery_selection}.png')
-        col2.image(battery_image, use_column_width=True)
+        col2.image(battery_image, use_column_width=True, caption=battery_selection)
 
     if panel_selection:
         panel_image = Image.open(f'app/assets/{panel_selection}.png')
-        col3.image(panel_image, use_column_width=True)
+        col3.image(panel_image, use_column_width=True, caption=panel_selection)
 
 # Return Lat & Lon from postcode
 base_url = 'https://api.postcodes.io/postcodes'
@@ -129,6 +129,7 @@ lon = response['result']['longitude']
 
 # Generate Dashboard when submit is triggered
 with st.form(key='params_for_api', border=False):
+    st.write('Click below to generate your dashboard 👇')
     if st.form_submit_button('CHARGE ⚡️', use_container_width=True):
         with st.spinner('charging up your dashboard...'):
 
@@ -185,12 +186,12 @@ with st.form(key='params_for_api', border=False):
                         ),
                         pitch=0,
                         zoom=16
-                    ),
-                    height=400,
-                    # width=670
+                    )
                 )
                 return fig
-            st.write(london_map(lat, lon))
+
+            # Display the map using full container width
+            st.plotly_chart(london_map(lat, lon), use_container_width=True)
 
             ### WEATHER
             # Initialize an empty list to store the weather codes at midday
@@ -216,27 +217,29 @@ with st.form(key='params_for_api', border=False):
             st.divider()
             st.markdown('')  # Empty markdown line for spacing
 
-            # Split the remaining space into three columns
-            l, m, r = st.columns(3)
 
             # Display images
             st.markdown('')  # Empty markdown line for spacing
             st.markdown('')  # Empty markdown line for spacing
 
+            # Split the remaining space into three columns
+            l, m, r = st.columns(3)
+            
             image1 = Image.open('app/assets/icon_money.png')
             image2 = Image.open('app/assets/icon_energy.png')
             image3 = Image.open('app/assets/icon_charge.png')
-            with m:
+            with l:
                 st.image(image1, use_column_width=True)
                 st.metric("Money Saved YTD", "£96.20", "£5.25 vs 2023")
             with m:
                 st.image(image2, use_column_width=True)
                 st.metric("Energy Saved YTD", "⌁568kWh", "0.46% vs 2023")
-            with m:
+            with r:
                 st.image(image3, use_column_width=True)
                 st.metric("Energy Sold YTD", "⌁451kWh", "+4.87% vs 2023")
 
             # convert model price dictionary into numpy array and cumulative sum
+            st.write('Hover over each line to compare the different scenarios')
             result = data['res_delta_buy_sell_price']['0'].items()
             graph_data = list(result)
             model = np.asarray(np.array(graph_data)[:,1], dtype=float).cumsum()/100
@@ -262,7 +265,7 @@ with st.form(key='params_for_api', border=False):
             fig_final.update_traces(line=dict(dash='dash'), selector=dict(name='No Solar'))
             fig_final.update_traces(line=dict(dash='dash'), selector=dict(name='Solar'))
             fig_final.update_traces(line=dict(dash='solid'), selector=dict(name='Solar plus Market'))
-            fig_final.update_layout(plot_bgcolor='rgba(0, 0, 0, 0)', paper_bgcolor='rgba(0, 0, 0, 0)')
+            fig_final.update_layout(plot_bgcolor='rgba(0, 0, 0, 0)', paper_bgcolor='rgba(0, 0, 0, 0)', showlegend=False)
             fig_final.update_yaxes(title_text='Cumulative Cost')
             fig_final.update_xaxes(title_text='')
             st.plotly_chart(fig_final,use_container_width=True)
@@ -272,18 +275,19 @@ with st.form(key='params_for_api', border=False):
 
             color = 'orange'
             # Buy vs Sell Price
+
             fig = px.line(x=date_range, y=y_sale, labels={'x': 'Date', 'y': 'Price (£)'}, title='FORECASTED ENERGY PRICE')
             fig.update_layout(
-                plot_bgcolor='rgba(0, 0, 0, 0)',
-                paper_bgcolor='rgba(0, 0, 0, 0)',
-                # width=600,
-                # height=400,
-                showlegend=False, # Hide legend
-                yaxis_range=[0,25]
+            plot_bgcolor='rgba(0, 0, 0, 0)',
+            paper_bgcolor='rgba(0, 0, 0, 0)',
+            # width=600,
+            # height=400,
+            showlegend=False, # Hide legend
+            yaxis_range=[0,25]
             )
             fig.add_scatter(x=date_range, y=y_buy, mode='lines', name='Buy Price')
             fig.add_scatter(x=date_range, y=y_sale, mode='lines', name='Sell Price')
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True)
 
 
             # Power gen vs power con
@@ -298,7 +302,7 @@ with st.form(key='params_for_api', border=False):
             fig_power.add_scatter(x=date_range, y=power_gen, mode='lines', name='generated')
             fig_power.add_scatter(x=date_range, y=y_cons, mode='lines', name='consumed')
             fig_power.update_yaxes(title_text='Energy (kWh)')
-            st.plotly_chart(fig_power)
+            st.plotly_chart(fig_power, use_container_width=True)
 
             # Battery Output
             fig_battopt = px.area(x=date_range, y=y_battopt[1:], labels={'x': 'Date', 'y': 'Battery Charge (kWh)'}, title='BATTERY CHARGE')
@@ -309,4 +313,51 @@ with st.form(key='params_for_api', border=False):
                 # height=400,
                 showlegend=False  # Hide legend
             )
-            st.plotly_chart(fig_battopt)
+            st.plotly_chart(fig_battopt, use_container_width=True)
+
+                            # Get definitiion for weather WMO codes
+            wmo_url = 'https://gist.githubusercontent.com/stellasphere/9490c195ed2b53c707087c8c2db4ec0c/raw/76b0cb0ef0bfd8a2ec988aa54e30ecd1b483495d/descriptions.json'
+            wmo_description = requests.get(wmo_url).json()
+
+            # Forecast header
+            st.subheader('7 Day Energy Forecast')
+            st.markdown('')  # Empty markdown line for spacing
+            st.markdown('')  # Empty markdown line for spacing
+
+            # WEATHER
+            daily_forecasts = np.array(weather).reshape(7, 24)
+            # Define the range of daytime hours (for example, 7 AM to 7 PM)
+            start_hour = 7
+            end_hour = 19
+            # Find the mode for daytime hours for each day
+            daily_modes = []
+            for day_data in daily_forecasts:
+                daytime_data = day_data[start_hour:end_hour] # Slice for daytime hours
+                mode = np.bincount(daytime_data).argmax()
+                daily_modes.append(mode)
+            weekly_forecast = {}
+            for index, day in enumerate(daily_modes):
+                image = wmo_description[f'{day}']['day']['image']
+                description = wmo_description[f'{day}']['day']['description']
+                weekly_forecast[index] = []
+                weekly_forecast[index].append(image)
+                weekly_forecast[index].append(description)
+
+            days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+            weather_description = [weekly_forecast[i][1] for i in range(7)]
+            st.dataframe(pd.DataFrame({'Day': days_of_week, 'Weather': weather_description}), use_container_width=True)
+
+        
+            # FOOTER
+            # Tracker cards
+            st.divider()
+            st.subheader('Model Performance')
+            st.markdown('')  # Empty markdown line for spacing
+
+            foot1, foot2, foot3 = st.columns(3)
+            foot1.metric("Average User Annual Savings", "£230 💷")
+            foot2.metric("Mean Absolute Error", "£0.64 📈")
+            foot3.metric("R Squared:", "0.92 ✅")
+            st.markdown('')  # Empty markdown line for spacing
+            st.markdown("---")
+            st.markdown('© 2024 Market Energy Ltd. All rights reserved.')   
